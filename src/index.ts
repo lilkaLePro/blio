@@ -1,8 +1,15 @@
-import app from './app';
+import createApp from './app';
+import mongoose from 'mongoose';
 
-const port = process.env.PORT || 5000;
-app.listen(port, () => {
-  /* eslint-disable no-console */
-  console.log(`Listening: http://localhost:${port}`);
-  /* eslint-enable no-console */
-});
+const app = createApp();
+
+const URL = process.env.DATABASE_URL;
+
+mongoose.connect(URL || '')
+  .then(() => {
+
+    app.listen(5001, () => {
+      console.log('server runing & db connected');
+    });
+
+  }).catch(() => console.log('server error'));
