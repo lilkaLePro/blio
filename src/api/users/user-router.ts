@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { deleteuser, getAllUsers, getUserByToken, register } from './user-controller';
+import { getAllUsers, getUserByToken, login, register } from './user-controller';
 
 const router = Router();
 
@@ -9,9 +9,7 @@ router.get('/users', getAllUsers);
 router.get('/me', getUserByToken );
 
 // api/user/234
-router.delete('/delete/:id', deleteuser );
-
-router.post('/create', register );
-router.post('/connect' );
+router.post('/register', register );
+router.post('/login', login);
 
 export default router ;
