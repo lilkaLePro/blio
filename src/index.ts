@@ -4,12 +4,13 @@ import mongoose from 'mongoose';
 const app = createApp();
 
 const URL = process.env.DATABASE_URL;
+const PORT = process.env.PORT;
 
 mongoose.connect(URL || '')
   .then(() => {
 
-    app.listen(5001, () => {
-      console.log('server runing & db connected');
+    app.listen(PORT, () => {
+      console.log('server runing & db connected', PORT);
     });
 
   }).catch(() => console.log('server error'));
