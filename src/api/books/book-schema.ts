@@ -10,14 +10,19 @@ interface IBook {
   code: string;
 }
 
-export const BookSchema: Schema = new mongoose.Schema<IBook>({
-  title: { type: String, required: true, min: 2, max: 40 },
-  author: { type: String, required: true, min: 2, max: 30 },
-  userId: { type: String, required: true },
-  categories: { type: String, required: true, min: 2, max: 32 },
-  stok: { type: Number, require: true },
-  code: { type: String, required: true },
-});
+export const BookSchema: Schema = new mongoose.Schema<IBook>(
+  {
+    title: { type: String, required: true, min: 2, max: 40 },
+    author: { type: String, required: true, min: 2, max: 30 },
+    userId: { type: String, required: true },
+    categories: { type: String, required: true, min: 2, max: 32 },
+    stok: { type: Number, require: true },
+    code: { type: String, required: true },
+  },
+  {
+    timestamps: true,
+  },
+);
 
 const BookModel = mongoose.model('books', BookSchema);
 
