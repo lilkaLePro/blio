@@ -1,11 +1,14 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, ObjectId, Schema } from 'mongoose';
 
-interface IUser {
-  _id?: string;
+export interface IUser {
+  _id?: ObjectId;
   firstname: string;
   lastname: string;
   password: string;
   email: string;
+  sessionToken: any;
+  sessionTokenExpiresAt: any;
+  salt: string;
 }
 
 export const UserSchema: Schema = new mongoose.Schema<IUser>(
@@ -14,6 +17,9 @@ export const UserSchema: Schema = new mongoose.Schema<IUser>(
     lastname: { type: String, required: true, min: 2, max: 30 },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true, min: 8, max: 8 },
+    sessionToken: { type: String, default: null },
+    sessionTokenExpiresAt: { type: Date, default: null },
+    salt: { type: String, required: true },
   },
   {
     timestamps: true,
@@ -22,19 +28,19 @@ export const UserSchema: Schema = new mongoose.Schema<IUser>(
 
 const UserModel = mongoose.model('users', UserSchema);
 
-export const getUsers = () => UserModel.find();
-export const getUserByEmail = (email: string) => UserModel.findOne({ email });
+export const getUsers = () => UserModel.find<IUser>();
+export const getUserByEmail = (email: string) => UserModel.findOne<IUser>({ email });
 export const getUserBySessionToken = (sessionToken: string) =>
   UserModel.findOne({
     'authentication.sessionToken': sessionToken,
   });
 
-export const getUserById = (id: string) => UserModel.findById(id);
+export const getUserById = (id: string) => UserModel.findById<IUser>(id);
 
-export const createUser = (value: Record<string, any>) =>
+export const createUser = (value: Partial<IUser>) =>
   new UserModel(value).save().then((user) => user.toObject());
 
 export const deleteUserById = (id: string) =>
-  UserModel.findOneAndDelete({ _id: id });
+  UserModel.findOneAndDelete<IUser>({ _id: id });
 export const updateUserById = (id: string, value: Record<string, any>) =>
-  UserModel.findByIdAndUpdate(id, value);
+  UserModel.findByIdAndUpdate<IUser>(id, value);
