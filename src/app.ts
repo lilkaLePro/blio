@@ -5,6 +5,7 @@ import cors from 'cors';
 
 import api from './api';
 import userRouter from './api/users/user-router';
+import bookRouter from './api/books/book-router';
 
 require('dotenv').config();
 
@@ -24,6 +25,7 @@ const createApp = () => {
   
 
   app.use('/api/auth', userRouter);
+  app.use('/api/books', bookRouter);
   return app;
 };
 

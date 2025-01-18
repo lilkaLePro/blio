@@ -31,14 +31,12 @@ const UserModel = mongoose.model('users', UserSchema);
 export const getUsers = () => UserModel.find<IUser>();
 export const getUserByEmail = (email: string) => UserModel.findOne<IUser>({ email });
 export const getUserBySessionToken = (sessionToken: string) =>
-  UserModel.findOne({
-    'authentication.sessionToken': sessionToken,
-  });
+  UserModel.findOne({ sessionToken });
 
 export const getUserById = (id: string) => UserModel.findById<IUser>(id);
 
-export const createUser = (value: Partial<IUser>) =>
-  new UserModel(value).save().then((user) => user.toObject());
+export const createUser = (values: Partial<IUser>) =>
+  new UserModel(values).save().then((user) => user.toObject());
 
 export const deleteUserById = (id: string) =>
   UserModel.findOneAndDelete<IUser>({ _id: id });
