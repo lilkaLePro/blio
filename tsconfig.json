@@ -11,9 +11,7 @@
     "skipLibCheck": true
   },
   "include": [
-    "./*.js",
-    "./*.ts",
     "src/**/*.ts",
-    "test/**/*.ts",
-  ],
+    "test/**/*.ts"
+  ]
 }
