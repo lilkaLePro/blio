@@ -73,13 +73,13 @@ export const register = async (req: Request, res: Response) => {
     await updateUserById(id, { sessionToken, sessionTokenExpiresAt });
 
     if (key) {
-      res.cookie(key, sessionToken, { domain: 'localhost', path: '/' });
+      return res.cookie(key, sessionToken, { domain: 'localhost', path: '/' });
     }
 
     return res.status(200).json({ msg: 'user created successfully', user, token, expireAt });
   } catch (error) {
-    console.log(error);
-    return res.sendStatus(500).json('user creation failed');
+    console.error(error);
+    return res.sendStatus(500).json({ error: 'user creation failed' });
   }
 };
 
