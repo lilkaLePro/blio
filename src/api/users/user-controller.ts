@@ -29,10 +29,15 @@ export const getUserByToken = async (req: Request, res: Response) => {
 
     const user = await getUserBySessionToken(token);
     if (!user) {
-      res.sendStatus(400).json({ msg: 'token non disponible' });
+      return res.sendStatus(400).json({ msg: 'token non disponible' });
     }
-    if (user?.sessionTokenExpiresAt && user?.sessionTokenExpiresAt < new Date()) {
-      return res.status(401).json({ msg: 'connexion expiré, reconnectez-vous' });
+    if (
+      user?.sessionTokenExpiresAt &&
+      user?.sessionTokenExpiresAt < new Date()
+    ) {
+      return res
+        .status(401)
+        .json({ msg: 'connexion expiré, reconnectez-vous' });
     }
 
     return res.status(200).json({ user });
@@ -45,8 +50,6 @@ export const register = async (req: Request, res: Response) => {
   try {
     const { email, firstname, lastname, password } = req.body;
     if (!email || !firstname || !lastname || !password) {
-      console.log(email, firstname, lastname, email);
-      
       return res.status(400).json({ msg: 'All fields are required' });
     }
     const existingUser = await getUserByEmail(email);
@@ -68,9 +71,9 @@ export const register = async (req: Request, res: Response) => {
     if (!id) {
       throw new Error('User ID is missing');
     }
-    const sessionToken = await authentication(saltString, id.toString() );
+    const sessionToken = await authentication(saltString, id.toString());
     let token = user?.sessionToken;
-    token =  sessionToken.toUpperCase();
+    token = sessionToken.toUpperCase();
 
     const expirationDuration = 24 * 60 * 60 * 1000;
     const sessionTokenExpiresAt = new Date(expirationDuration + Date.now());
@@ -83,7 +86,9 @@ export const register = async (req: Request, res: Response) => {
       res.cookie(key, sessionToken, { domain: 'localhost', path: '/' });
     }
 
-    return res.status(200).json({ msg: 'user created successfully', user, token, expireAt });
+    return res
+      .status(200)
+      .json({ msg: 'user created successfully', user, token, expireAt });
   } catch (error) {
     console.log(error);
     return res.status(500).json('user creation failed');
@@ -93,31 +98,41 @@ export const register = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ msg: 'All fields are required' });
+    }
     const verifedEmail = await getUserByEmail(email);
     if (!verifedEmail) {
       return res.status(404).json('user doesn t exist');
     }
-    
     const userData = {
       sessioToken: verifedEmail?.sessionToken,
       password: verifedEmail?.password,
       salt: verifedEmail?.salt,
     };
+
     const verifedPassword = await authentication(userData?.salt, password);
     if (userData?.password !== verifedPassword) {
       return res.status(403).json('Password incorrect');
     }
     const salt = random();
-    const id = verifedEmail?._id;
-    if (id) {
-      userData.sessioToken = authentication(salt, id.toString());
-      const sessionToken = authentication(salt, id.toString());
-      await updateUserById(id.toString(), { sessionToken });
+    const id = verifedEmail?._id as unknown as string;
+    if (!id) {
+      throw new Error('User ID is missing');
+    }    
+    userData.sessioToken = await authentication(salt, id.toString());
+    const sessionToken = userData?.sessioToken;
+    console.log(sessionToken);
+    await updateUserById(id.toString(), { sessionToken });
+
+    if (key) {
+      res.cookie(key, sessionToken, { domain: 'localhost', path: '/', expires: verifedEmail?.sessionTokenExpiresAt });
     }
 
-    return res.status(200).json({ success: 'connected sucessfully', verifedEmail });
-
+    return res
+      .status(200)
+      .json({ success: 'connected sucessfully', verifedEmail });
   } catch (error) {
-    return res.status(500).json('login failed');
+    return res.status(500).json({ error: 'login failed' });
   }
 };

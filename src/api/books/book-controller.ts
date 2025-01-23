@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { bookById, createBook, getBookByCode, getBookByUser } from './book-schema';
+import { bookById, createBook, getBookByISBN, getBookByUser } from './book-schema';
 import { getUserById } from '../users/user-schema';
 
 export const getUserBook = async (req: Request, res: Response) => {
@@ -31,13 +31,13 @@ export const getBookById = async (req: Request, res: Response) => {
 
 export const addBook = async (req: Request, res: Response) => {
   try {
-    const { title, author, categories, stok, code } = req.body;
+    const { title, author, categories, stok, isbn } = req.body;
     const { userId } = req.params;
     const isUserExist = await getUserById(userId);
     if (!isUserExist) {
       return res.status(403).json(`user with id ${userId} doesn t exist`);
     }
-    const isBookExist = await getBookByCode(code);
+    const isBookExist = await getBookByISBN(isbn);
     if (isBookExist) {
       return res.status(400).json('Book already exist');
     }
@@ -47,7 +47,7 @@ export const addBook = async (req: Request, res: Response) => {
       userId : userId.toString(),
       categories,
       stok,
-      code,
+      isbn,
     });
 
     return res.status(201).json({ success: 'book added sussessfully', book });
