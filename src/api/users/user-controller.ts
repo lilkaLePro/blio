@@ -119,7 +119,6 @@ export const login = async (req: Request, res: Response) => {
       sessioToken: verifedEmail?.sessionToken,
       password: verifedEmail?.password,
       salt: verifedEmail?.salt,
-      sessionTokenExpiresAt: verifedEmail?.sessionTokenExpiresAt + expirationDuration,
     };
 
     const verifedPassword = await authentication(userData?.salt, password);
@@ -133,16 +132,17 @@ export const login = async (req: Request, res: Response) => {
     }    
     userData.sessioToken = await authentication(salt, id.toString());
     const sessionToken = userData?.sessioToken;
-    await updateUserById(id, { sessionToken });
-    console.log(sessionToken);
-    
+    const sessionTokenExpiresAt = new Date(expirationDuration + Date.now());
+
+    await updateUserById(id, { sessionToken, sessionTokenExpiresAt });
+
     if (key) {
       res.cookie(key, sessionToken, { domain: 'localhost', path: '/', expires: verifedEmail?.sessionTokenExpiresAt });
     }
 
     return res
       .status(200)
-      .json({ success: 'connected sucessfully', verifedEmail, sessionToken });
+      .json({ success: 'connected sucessfully', verifedEmail, sessionToken, sessionTokenExpiresAt });
   } catch (error) {
     return res.status(500).json({ error: 'login failed' });
   }
