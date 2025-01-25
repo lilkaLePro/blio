@@ -2,6 +2,7 @@ import express from 'express';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 import api from './api';
 import userRouter from './api/users/user-router';
@@ -22,6 +23,7 @@ const createApp = () => {
     }),
   );
   app.use(express.json());
+  app.use(cookieParser());
 
   app.get('/', (req, res) => {
     res.json({

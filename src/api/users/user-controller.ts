@@ -20,16 +20,25 @@ export const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
+export const userByEmail = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.params;
+    const user = await getUserByEmail(email);
+    return res.status(200).json({ user });
+  } catch (error) {
+    return res.status(500).json({ msg: 'connot get user' });
+  }
+};
+
 export const getUserByToken = async (req: Request, res: Response) => {
   try {
-    let token = req.cookies[key];
+    let token = req.cookies['SECRETE-KEY'];
     if (!token) {
-      res.sendStatus(400).json({ msg: 'token not found' });
+      return res.status(403).json({ msg: 'token not found' });
     }
-
     const user = await getUserBySessionToken(token);
     if (!user) {
-      return res.sendStatus(400).json({ msg: 'token non disponible' });
+      return res.status(400).json({ msg: 'token non disponible' });
     }
     if (
       user?.sessionTokenExpiresAt &&
@@ -42,7 +51,7 @@ export const getUserByToken = async (req: Request, res: Response) => {
 
     return res.status(200).json({ user });
   } catch (error) {
-    return res.status(500).json(' server error ');
+    return res.status(500).json({ msg: 'error, user ' });
   }
 };
 
@@ -73,7 +82,7 @@ export const register = async (req: Request, res: Response) => {
     }
     const sessionToken = await authentication(saltString, id.toString());
     let token = user?.sessionToken;
-    token = sessionToken.toUpperCase();
+    token = sessionToken;
 
     const expirationDuration = 24 * 60 * 60 * 1000;
     const sessionTokenExpiresAt = new Date(expirationDuration + Date.now());
@@ -105,10 +114,12 @@ export const login = async (req: Request, res: Response) => {
     if (!verifedEmail) {
       return res.status(404).json('user doesn t exist');
     }
+    const expirationDuration = 24 * 60 * 60 * 1000;
     const userData = {
       sessioToken: verifedEmail?.sessionToken,
       password: verifedEmail?.password,
       salt: verifedEmail?.salt,
+      sessionTokenExpiresAt: verifedEmail?.sessionTokenExpiresAt + expirationDuration,
     };
 
     const verifedPassword = await authentication(userData?.salt, password);
@@ -122,16 +133,16 @@ export const login = async (req: Request, res: Response) => {
     }    
     userData.sessioToken = await authentication(salt, id.toString());
     const sessionToken = userData?.sessioToken;
+    await updateUserById(id, { sessionToken });
     console.log(sessionToken);
-    await updateUserById(id.toString(), { sessionToken });
-
+    
     if (key) {
       res.cookie(key, sessionToken, { domain: 'localhost', path: '/', expires: verifedEmail?.sessionTokenExpiresAt });
     }
 
     return res
       .status(200)
-      .json({ success: 'connected sucessfully', verifedEmail });
+      .json({ success: 'connected sucessfully', verifedEmail, sessionToken });
   } catch (error) {
     return res.status(500).json({ error: 'login failed' });
   }
