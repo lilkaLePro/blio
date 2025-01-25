@@ -97,7 +97,7 @@ export const register = async (req: Request, res: Response) => {
 
     return res
       .status(200)
-      .json({ msg: 'user created successfully', user, token, expireAt });
+      .json({ user, token, expireAt });
   } catch (error) {
     console.log(error);
     return res.status(500).json('user creation failed');
@@ -134,7 +134,7 @@ export const login = async (req: Request, res: Response) => {
     const sessionToken = userData?.sessioToken;
     const sessionTokenExpiresAt = new Date(expirationDuration + Date.now());
 
-    await updateUserById(id, { sessionToken, sessionTokenExpiresAt });
+    const user = await updateUserById(id, { sessionToken, sessionTokenExpiresAt });
 
     if (key) {
       res.cookie(key, sessionToken, { domain: 'localhost', path: '/', expires: verifedEmail?.sessionTokenExpiresAt });
@@ -142,7 +142,7 @@ export const login = async (req: Request, res: Response) => {
 
     return res
       .status(200)
-      .json({ success: 'connected sucessfully', verifedEmail, sessionToken, sessionTokenExpiresAt });
+      .json(user);
   } catch (error) {
     return res.status(500).json({ error: 'login failed' });
   }
