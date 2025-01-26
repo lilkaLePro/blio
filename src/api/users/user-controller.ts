@@ -7,7 +7,7 @@ import {
   getUsers,
   updateUserById,
 } from './user-schema';
-const key = process.env.SECRETE || '';
+const key = process.env.SECRETE || 'BLIUSER';
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
@@ -32,7 +32,7 @@ export const userByEmail = async (req: Request, res: Response) => {
 
 export const getUserByToken = async (req: Request, res: Response) => {
   try {
-    let token = req.cookies['SECRETE-KEY'];
+    let token = req.cookies[key];
     if (!token) {
       return res.status(403).json({ msg: 'token not found' });
     }
@@ -142,7 +142,7 @@ export const login = async (req: Request, res: Response) => {
 
     return res
       .status(200)
-      .json(user);
+      .json({ user, sessionToken });
   } catch (error) {
     return res.status(500).json({ error: 'login failed' });
   }
