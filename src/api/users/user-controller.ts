@@ -7,7 +7,7 @@ import {
   getUsers,
   updateUserById,
 } from './user-schema';
-const key = process.env.SECRETE || 'BLIUSER';
+const key = 'BLIUSER';
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {

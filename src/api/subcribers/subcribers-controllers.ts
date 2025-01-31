@@ -32,8 +32,7 @@ export const getoneSubcribersById = async (req: Request, res: Response) => {
 
 export const addSubscriber = async (req: Request, res: Response) => {
   try {
-    const { firstname, lastname, email, phoneNumber, job } = req.body;
-    const { userId } = req.params;
+    const { firstname, lastname, email, phoneNumber, job, userId } = req.body;
 
     const isSubscriberExist = await findSubscriberByNumber(phoneNumber);
     if (isSubscriberExist) {
@@ -47,7 +46,7 @@ export const addSubscriber = async (req: Request, res: Response) => {
       job,
       lastname,
       phoneNumber,
-      userId: userId.toString(),
+      userId,
     });
 
     return res

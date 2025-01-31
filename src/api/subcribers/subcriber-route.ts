@@ -3,7 +3,7 @@ import { addSubscriber, getAllSubscribersByUser, getoneSubcribersById } from './
 
 const router = Router();
 
-router.post('/add/:userId', addSubscriber);
+router.post('/add', addSubscriber);
 router.get('/:id', getoneSubcribersById);
 router.get('/user/:userId', getAllSubscribersByUser);
 
