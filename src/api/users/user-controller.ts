@@ -92,7 +92,7 @@ export const register = async (req: Request, res: Response) => {
     await updateUserById(id, { sessionToken, sessionTokenExpiresAt });
 
     if (key) {
-      res.cookie(key, sessionToken, { domain: 'localhost', path: '/' });
+      res.cookie(key, sessionToken, { domain: 'blio-teck.onrender.com', path: '/', sameSite: true, secure: true });
     }
 
     return res
