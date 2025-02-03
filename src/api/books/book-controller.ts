@@ -55,3 +55,14 @@ export const addBook = async (req: Request, res: Response) => {
     return res.status(500).json({ msg: 'creation book failed', error });
   }
 };
+
+export const bookCount = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const books = await getBookByUser(userId);
+    
+    return res.status(200).json(books?.length);
+  } catch (error) {
+    return res.status(500).json('error lors de la recuperation de livre');
+  }
+};
