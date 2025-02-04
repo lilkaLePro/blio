@@ -90,9 +90,9 @@ export const register = async (req: Request, res: Response) => {
     expireAt = sessionTokenExpiresAt;
 
     await updateUserById(id, { sessionToken, sessionTokenExpiresAt });
-
+    const isProd = process.env.NODE_ENV === 'production';
     if (key) {
-      res.cookie(key, sessionToken, { domain: 'https://blio-teck.onrender.com', path: '/', sameSite: 'none', secure: true });
+      res.cookie(key, sessionToken, { httpOnly: isProd, path: '/', sameSite: 'none', secure: true, expires: sessionTokenExpiresAt });
     }
 
     return res
