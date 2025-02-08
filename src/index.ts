@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 const app = createApp();
 
 const URL = process.env.DATABASE_URL;
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT;
 
 mongoose.connect(URL || '')
   .then(() => {
