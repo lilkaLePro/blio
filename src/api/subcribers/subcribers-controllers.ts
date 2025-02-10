@@ -20,12 +20,10 @@ export const getoneSubcribersById = async (req: Request, res: Response) => {
     const { id } = req.params;
     const subscriber = await getSubscriberById(id.toString());
     if (!subscriber) {
-      console.error('filed geting subscriber');
       return res.status(403);
     }
     return res.status(200).json(subscriber);
   } catch (error) {
-    console.error('error lors du fetch d un subcriber', error);
     return res.status(500);
   }
 };
@@ -52,9 +50,8 @@ export const addSubscriber = async (req: Request, res: Response) => {
 
     return res
       .status(200)
-      .json({ msg: 'subcriber cerated successfully', subscriber });
+      .json(subscriber);
   } catch (error) {
-    console.error('Subscriber creation failed', error);
-    return res.status(500);
+    return res.status(500).json(error);
   }
 };
