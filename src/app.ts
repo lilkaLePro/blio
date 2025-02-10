@@ -9,6 +9,7 @@ import userRouter from './api/users/user-router';
 import bookRouter from './api/books/book-router';
 import subscriberRouter from './api/subcribers/subcriber-route';
 import countsRouter from './api/counts/counts-route';
+import loanRouter from './api/loans/loan-route';
 
 require('dotenv').config();
 
@@ -36,6 +37,7 @@ const createApp = () => {
   app.use('/api/books', bookRouter);
   app.use('/api/subscriber', subscriberRouter);
   app.use('/api/counts', countsRouter);
+  app.use('/api/loan', loanRouter);
   return app;
 };
 

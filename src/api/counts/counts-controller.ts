@@ -13,6 +13,6 @@ export const AllCounts = async (req: Request, res: Response) => {
 
     return res.status(200).json({ books, subcribers });
   } catch (error) {
-    return res.status(500).json({ msg: 'error getting counts' });
+    return res.status(500).json(error);
   }
 };
