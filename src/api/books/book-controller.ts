@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response } from 'express-serve-static-core';
 import { bookById, createBook, getBookByISBN, getBookByUser } from './book-schema';
 import { getUserById } from '../users/user-schema';
 
