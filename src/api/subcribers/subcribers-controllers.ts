@@ -52,6 +52,6 @@ export const addSubscriber = async (req: Request, res: Response) => {
       .status(200)
       .json(subscriber);
   } catch (error) {
-    return res.status(500).json(error);
+    return res.status(500).json({ 'error': error });
   }
 };

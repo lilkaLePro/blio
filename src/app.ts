@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import cors from 'cors';
@@ -26,7 +26,7 @@ const createApp = () => {
   app.use(express.json());
   app.use(cookieParser());
 
-  app.get('/', (req, res) => {
+  app.get('/', (req: Request, res: Response) => {
     res.json({
       message: '🦄🌈✨👋🌎🌍🌏✨🌈🦄',
     });

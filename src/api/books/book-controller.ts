@@ -31,8 +31,7 @@ export const getBookById = async (req: Request, res: Response) => {
 
 export const addBook = async (req: Request, res: Response) => {
   try {
-    const { title, author, categories, stok, isbn } = req.body;
-    const { userId } = req.params;
+    const { title, author, categories, stok, isbn, userId } = req.body;
     const isUserExist = await getUserById(userId);
     if (!isUserExist) {
       return res.status(403).json(`user with id ${userId} doesn t exist`);

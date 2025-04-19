@@ -1,10 +1,10 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 
 const router = express.Router();
 
 type EmojiResponse = string[];
 
-router.get<{}, EmojiResponse>('/', (req, res) => {
+router.get<{}, EmojiResponse>('/', (req: Request, res: Response) => {
   res.json(['😀', '😳', '🙄']);
 });
 
